@@ -10,3 +10,4 @@ It is a simple but well made to-do list.
 - Pytest
 - Typos
 - FastAPI
+- Pydantic
