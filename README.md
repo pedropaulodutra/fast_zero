@@ -11,6 +11,7 @@ It is a simple and well made to-do list api.
 - Typos
 - FastAPI
 - Pydantic
+- SQLAlchemy
 
 ## How to run
 
