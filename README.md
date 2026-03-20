@@ -12,6 +12,9 @@ It is a simple and well made to-do list api.
 - FastAPI
 - Pydantic
 - SQLAlchemy
+- Alembic
+- Pwdlib
+- Pyjwt
 
 ## How to run
 
