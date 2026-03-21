@@ -11,14 +11,11 @@ from sqlalchemy.orm import Session
 
 from fast_zero.database import get_session
 from fast_zero.models import User
+from fast_zero.settings import Settings
 
 pwd_context = PasswordHash.recommended()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
-
-
-SECRET_KEY = '0558c915caac208f8daa8aace38e8f97b296ed8f8a22d3256450d85f0b149ab0'
-ALGORITHM = 'HS256'
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
+settings = Settings()
 
 
 def get_password_hash(password: str):
@@ -33,13 +30,15 @@ def create_access_token(data: dict):
     to_encode = data.copy()
 
     expire = datetime.now(tz=ZoneInfo('UTC')) + timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
     to_encode.update({'exp': expire})
 
     encoded_jwt = encode(
-        payload=to_encode, key=SECRET_KEY, algorithm=ALGORITHM
+        payload=to_encode,
+        key=settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM,
     )
 
     return encoded_jwt
@@ -55,7 +54,9 @@ def get_current_user(
         headers={'WWW-Authenticate': 'Bearer'},
     )
     try:
-        payload = decode(token, key=SECRET_KEY, algorithms=ALGORITHM)
+        payload = decode(
+            token, key=settings.SECRET_KEY, algorithms=settings.ALGORITHM
+        )
         subject_email = payload.get('sub')
         if not subject_email:
             raise credentials_exception
